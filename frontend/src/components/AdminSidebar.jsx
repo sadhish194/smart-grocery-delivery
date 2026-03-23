@@ -2,10 +2,13 @@
 // import { useAuth } from '../context/AuthContext';
 
 // const NAV = [
-//   { to: '/admin', label: 'Dashboard', icon: 'dashboard' },
-//   { to: '/admin/products', label: 'Products', icon: 'inventory_2' },
-//   { to: '/admin/orders', label: 'Orders', icon: 'shopping_cart' },
-//   { to: '/admin/users', label: 'Users', icon: 'group' },
+//   { to: '/admin',          label: 'Dashboard',       icon: 'dashboard' },
+//   { to: '/admin/products', label: 'Products',         icon: 'inventory_2' },
+//   { to: '/admin/orders',   label: 'Orders',           icon: 'shopping_cart' },
+//   { to: '/admin/users',    label: 'Users',            icon: 'group' },
+//   { to: '/admin/coupons',  label: 'Coupons',          icon: 'sell' },
+//   { to: '/admin/pricing',     label: 'Dynamic Pricing',  icon: 'auto_graph' },
+//   { to: '/admin/algorithms',  label: 'Algorithms',       icon: 'psychology' },
 // ];
 
 // export default function AdminSidebar() {
@@ -60,7 +63,10 @@ const NAV = [
   { to: '/admin/orders',   label: 'Orders',           icon: 'shopping_cart' },
   { to: '/admin/users',    label: 'Users',            icon: 'group' },
   { to: '/admin/coupons',  label: 'Coupons',          icon: 'sell' },
-  { to: '/admin/pricing',  label: 'Dynamic Pricing',  icon: 'auto_graph' },
+  { to: '/admin/pricing',     label: 'Dynamic Pricing',  icon: 'auto_graph' },
+  { to: '/admin/algorithms',  label: 'Algorithms',       icon: 'psychology' },
+  { to: '/admin/analytics',   label: 'Analytics',        icon: 'analytics' },
+  { to: '/admin/flash-sales', label: 'Flash Sales',      icon: 'local_fire_department' },
 ];
 
 export default function AdminSidebar() {
