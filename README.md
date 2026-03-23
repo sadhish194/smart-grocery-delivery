@@ -9,8 +9,10 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?style=flat&logo=mongodb)](https://mongodb.com/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
 [![Razorpay](https://img.shields.io/badge/Razorpay-Payments-0D6EFD?style=flat)](https://razorpay.com/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-Realtime-010101?style=flat&logo=socket.io)](https://socket.io/)
+[![Gemini](https://img.shields.io/badge/Gemini-AI-4285F4?style=flat&logo=google)](https://aistudio.google.com/)
 
-[Features](#-features) · [Tech Stack](#-tech-stack) · [Setup](#-setup--installation) · [API Docs](#-api-endpoints) · [Screenshots](#-screenshots)
+[Features](#-features) · [Tech Stack](#-tech-stack) · [Setup](#-setup--installation) · [API Docs](#-api-endpoints)
 
 </div>
 
@@ -19,27 +21,37 @@
 ## ✨ Features
 
 ### 🛍️ Customer
-- Browse **31,000+ real BigBasket products** with search, filters & sorting
-- Product details with image gallery, accordions & customer reviews
+- Browse **8,000+ real BigBasket products** with search, filters & sorting
+- **3-slide hero carousel** with auto-play and dot navigation
+- **Blinkit-style category grid** with product images
+- Product details with image gallery, smart accordions & customer reviews
+- Category-aware tabs — food shows Ingredients/Nutrition, non-food shows How to Use/Storage
 - Cart & Wishlist management
 - **Real-time order tracking** with live Leaflet map & rider location
 - **Razorpay payments** — UPI, Card, NetBanking, Wallets & Cash on Delivery
 - Coupon codes with live validation
-- AI-powered chatbot (Genie) for instant support
+- **AI Chatbot (Genie)** — powered by Google Gemini
+- **🎤 Voice Assistant** — search, navigate & add to cart by voice
+- **⭐ Loyalty Points** — earn points on every order, Bronze/Silver/Gold/Platinum tiers
+- **🎁 Referral System** — share code, friend gets ₹50, you get ₹100
+- **🔄 Subscriptions** — recurring weekly/monthly deliveries
+- **🔔 Real-time Notifications** — order updates via Socket.io
 
 ### 🔧 Admin
-- Analytics dashboard — revenue, orders, top products, monthly trends
+- **📊 Sales Analytics** — revenue charts, top products, category breakdown
+- **⚡ Flash Sales** — create timed deals with live countdown timer on home page
 - Product management — CRUD, stock, organic/featured flags
 - Order management — assign delivery persons, cancel orders
 - User management — activate/deactivate accounts
 - Coupon management — percentage & flat discounts
-- **Dynamic Pricing Engine** — auto-adjusts prices based on demand, stock, season & market data
+- **Dynamic Pricing Engine** — auto-adjusts prices based on demand, stock, season & time
+- **🧠 Smart Algorithms** — Inventory Forecast, Cart Abandonment, Route Optimizer, Coupon Targeting
 
 ### 🚴 Delivery Partner
 - Personal dashboard with earnings, deliveries & weekly progress
 - Live map showing active delivery with **Google Maps navigation**
 - Order workflow — Accept → Start Delivery → Mark Delivered
-- New order notifications with accept button
+- Real-time notifications for new assignments
 
 ### 🤖 AI Chatbot (Genie)
 - Powered by **Google Gemini** (free tier)
@@ -47,13 +59,20 @@
 - Quick-action chips for common queries
 - Embedded in Help page + floating bubble on all pages
 
+### 🎤 Voice Assistant
+- **Web Speech API** — 100% free, built into Chrome
+- Voice commands: "Search tomatoes", "Go to cart", "Track my order"
+- **Add to cart by voice** — "Add onion to cart" → finds product → adds instantly
+- **Talk to Genie AI** — ask anything, spoken answer via Text-to-Speech
+- Waveform animation while listening, speaking indicator
+
 ### 📈 Dynamic Pricing
 - Seasonal factors (monsoon, harvest seasons)
 - Demand scoring (views + cart adds)
 - Stock-based pricing (low stock = higher price)
-- Exchange rate inflation proxy
 - Time-of-day discounts (morning fresh, evening clearance)
 - Auto-runs every 30 mins for volatile categories
+- **Flash sale prices** applied server-side in real time
 
 ---
 
@@ -65,9 +84,11 @@
 | **Backend** | Node.js, Express.js |
 | **Database** | MongoDB + Mongoose |
 | **Auth** | JWT (JSON Web Tokens) |
+| **Real-time** | Socket.io (notifications, live updates) |
 | **Payments** | Razorpay (UPI, Card, NetBanking, Wallets) |
 | **Maps** | Leaflet.js + OpenStreetMap (free, no API key) |
 | **AI Chatbot** | Google Gemini API (free tier) |
+| **Voice** | Web Speech API + SpeechSynthesis (free, built-in) |
 | **Geocoding** | Nominatim (OpenStreetMap, free) |
 | **HTTP Client** | Axios |
 
@@ -78,25 +99,24 @@
 ```
 smart-grocery/
 ├── backend/
-│   ├── config/
-│   │   └── db.js
+│   ├── config/db.js
 │   ├── controllers/
 │   │   ├── authController.js
-│   │   ├── productController.js
-│   │   ├── orderController.js
+│   │   ├── productController.js   ← flash sale prices applied here
+│   │   ├── orderController.js     ← loyalty points on order
 │   │   ├── cartController.js
-│   │   ├── adminController.js
-│   │   └── deliveryController.js
+│   │   ├── adminController.js     ← notifications on assign/cancel
+│   │   └── deliveryController.js  ← notifications on status change
 │   ├── middleware/
-│   │   ├── authMiddleware.js
-│   │   ├── roleMiddleware.js
-│   │   └── errorMiddleware.js
 │   ├── models/
-│   │   ├── User.js
-│   │   ├── Product.js        ← includes dynamic pricing fields
-│   │   ├── Order.js          ← includes Razorpay fields
+│   │   ├── User.js           ← loyalty, referral, notification prefs
+│   │   ├── Product.js        ← dynamic pricing + flash sale fields
+│   │   ├── Order.js          ← Razorpay + loyalty fields
 │   │   ├── Cart.js
-│   │   ├── Wishlist.js
+│   │   ├── FlashSale.js      ← flash sale model
+│   │   ├── Bundle.js
+│   │   ├── Subscription.js
+│   │   ├── Notification.js
 │   │   ├── Review.js
 │   │   └── Coupon.js
 │   ├── routes/
@@ -106,41 +126,46 @@ smart-grocery/
 │   │   ├── cartRoutes.js
 │   │   ├── adminRoutes.js
 │   │   ├── deliveryRoutes.js
-│   │   ├── chatRoutes.js     ← Gemini AI proxy
-│   │   ├── paymentRoutes.js  ← Razorpay
-│   │   └── pricingRoutes.js  ← Dynamic pricing
+│   │   ├── chatRoutes.js       ← Gemini AI proxy
+│   │   ├── paymentRoutes.js    ← Razorpay
+│   │   ├── pricingRoutes.js    ← Dynamic pricing
+│   │   ├── algorithmRoutes.js  ← 6 smart algorithms
+│   │   └── featuresRoutes.js   ← loyalty, referral, flash sales, subscriptions
 │   ├── utils/
-│   │   ├── generateToken.js
-│   │   ├── dynamicPricing.js ← pricing algorithm
+│   │   ├── algorithms.js       ← 6 AI algorithms
+│   │   ├── dynamicPricing.js
 │   │   └── pricingScheduler.js
 │   ├── seeder.js
-│   ├── importProducts.js     ← BigBasket CSV importer
-│   ├── fixImages.js          ← Pollinations.ai image fixer
-│   └── server.js
+│   ├── importProducts.js
+│   ├── enrichProducts.js       ← adds descriptions & how-to-use
+│   └── server.js               ← Socket.io integrated
 │
 └── frontend/
     └── src/
         ├── components/
         │   ├── Navbar.jsx
         │   ├── Footer.jsx
-        │   ├── ProductCard.jsx
+        │   ├── ProductCard.jsx       ← flash sale badge + price
         │   ├── ChatBot.jsx
+        │   ├── VoiceAssistant.jsx    ← voice commands + AI
+        │   ├── NotificationBell.jsx  ← real-time bell
+        │   ├── FlashSaleBanner.jsx   ← countdown timer
         │   ├── AdminSidebar.jsx
         │   ├── DeliverySidebar.jsx
         │   └── SharedComponents.jsx
-        ├── context/
-        │   ├── AuthContext.jsx
-        │   └── CartContext.jsx
         ├── pages/
         │   ├── customer/
-        │   │   ├── Home.jsx
+        │   │   ├── Home.jsx          ← 3-slide hero, Blinkit categories
         │   │   ├── Products.jsx
-        │   │   ├── ProductDetails.jsx
+        │   │   ├── ProductDetails.jsx ← smart accordions by category
         │   │   ├── Cart.jsx
-        │   │   ├── Checkout.jsx    ← Razorpay integration
-        │   │   ├── Orders.jsx      ← Live map tracking
+        │   │   ├── Checkout.jsx      ← Razorpay
+        │   │   ├── Orders.jsx        ← live map tracking
+        │   │   ├── Loyalty.jsx       ← points & tiers
+        │   │   ├── Referral.jsx
+        │   │   ├── Subscriptions.jsx
         │   │   ├── Profile.jsx
-        │   │   ├── Help.jsx        ← AI chatbot embedded
+        │   │   ├── Help.jsx
         │   │   ├── Login.jsx
         │   │   └── Register.jsx
         │   ├── admin/
@@ -149,15 +174,15 @@ smart-grocery/
         │   │   ├── ManageOrders.jsx
         │   │   ├── ManageUsers.jsx
         │   │   ├── ManageCoupons.jsx
-        │   │   └── DynamicPricing.jsx
+        │   │   ├── DynamicPricing.jsx
+        │   │   ├── Algorithms.jsx    ← inventory, cart, routes, coupons
+        │   │   ├── Analytics.jsx     ← revenue charts
+        │   │   └── FlashSales.jsx
         │   └── delivery/
-        │       ├── DeliveryDashboard.jsx  ← mini map + new orders
+        │       ├── DeliveryDashboard.jsx
         │       ├── DeliveryOrders.jsx
         │       └── DeliveryProfile.jsx
-        ├── services/
-        │   └── api.js
-        ├── App.jsx
-        └── main.jsx
+        └── App.jsx
 ```
 
 ---
@@ -187,13 +212,13 @@ Edit `backend/.env`:
 ```env
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/grocerydb
-JWT_SECRET=your_super_secret_key_change_this
+JWT_SECRET=your_super_secret_key_here
 NODE_ENV=development
 
 # AI Chatbot — free at aistudio.google.com
 GEMINI_API_KEY=your_gemini_api_key
 
-# Payments — free at razorpay.com
+# Payments — free account at razorpay.com
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxx
 RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxx
 
@@ -236,23 +261,6 @@ App runs at **http://localhost:5173** 🎉
 
 ---
 
-## 🛍️ Import 31,000+ Real Products (Optional)
-
-Download the **BigBasket Products dataset** from Kaggle:
-> kaggle.com/datasets/surajjha101/bigbasket-entire-product-list-28k-datapoints
-
-```bash
-cd backend
-
-# Place BigBasket Products.csv in backend/ folder, then:
-node importProducts.js "BigBasket Products.csv"
-
-# Fix missing product images (uses Pollinations AI — free)
-node fixImages.js
-```
-
----
-
 ## 🎨 Design System
 
 | Token | Value |
@@ -276,7 +284,7 @@ node fixImages.js
 | Wallets | Paytm, Amazon Pay, Freecharge |
 | Cash on Delivery | Pay on delivery |
 
-**Test UPI:** `success@razorpay`
+**Test UPI:** `success@razorpay`  
 **Test Card:** `4111 1111 1111 1111` · Any future date · Any CVV
 
 ---
@@ -286,16 +294,27 @@ node fixImages.js
 ```
 Customer places order
        ↓
-  [Pending]  ───────── Admin views & assigns
+  [Pending]  ─── Admin assigns delivery person → 🔔 Customer notified
        ↓
-  [Assigned] ───────── Delivery person sees order
+  [Assigned] ─── Delivery person sees order
        ↓
-  [Accepted] ───────── Delivery person accepts
+  [Accepted] ─── Rider accepts → 🔔 Customer notified
        ↓
-[OutForDelivery] ───── En route with live map
+[OutForDelivery] ── En route with live map → 🔔 "On the way!"
        ↓
- [Delivered] ───────── Order complete ✅
+ [Delivered] ─── Order complete ✅ → 🔔 + ⭐ Loyalty points awarded
 ```
+
+---
+
+## ⭐ Loyalty Points System
+
+| Tier | Points Required | Benefits |
+|---|---|---|
+| 🥉 Bronze | 0+ | 1 pt per ₹10 spent |
+| 🥈 Silver | 500+ | 1.5x points, Free delivery on ₹300+ |
+| 🥇 Gold | 2000+ | 2x points, Free delivery always |
+| 💎 Platinum | 5000+ | 3x points, Exclusive deals, Dedicated support |
 
 ---
 
@@ -314,89 +333,47 @@ Customer places order
 
 ---
 
+## 🧠 Smart Algorithms
+
+| Algorithm | What it does |
+|---|---|
+| 🎯 Recommendations | Co-purchase + trending + personalized |
+| 🔍 Smart Search | Ranked by purchase frequency, rating, personalization |
+| 🛒 Cart Abandonment | Detects abandoned carts, shows lost revenue |
+| 📦 Inventory Forecast | Predicts stockouts based on sales velocity |
+| 🗺️ Route Optimizer | Assigns orders to nearest delivery person (Haversine) |
+| 💡 Coupon Targeting | Segments churned/at-risk users for smart discounts |
+
+---
+
 ## 🔌 API Endpoints
 
 ### Auth
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| POST | /api/auth/register | Register user | — |
-| POST | /api/auth/login | Login | — |
-| GET | /api/auth/profile | Get profile | ✓ |
-| PUT | /api/auth/profile | Update profile | ✓ |
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | /api/auth/register | Register user |
+| POST | /api/auth/login | Login |
+| GET | /api/auth/profile | Get profile |
+| PUT | /api/auth/profile | Update profile |
 
-### Products
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | /api/products | All products (filter/search/sort/paginate) | — |
-| GET | /api/products/featured | Featured products | — |
-| GET | /api/products/:id | Single product + reviews | — |
-| POST | /api/products/:id/reviews | Add review | Customer |
-| POST | /api/products | Create product | Admin |
-| PUT | /api/products/:id | Update product | Admin |
-| DELETE | /api/products/:id | Delete product | Admin |
+### Features
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | /api/features/notifications | Get notifications |
+| GET | /api/features/loyalty | Loyalty points & tier |
+| GET | /api/features/referral | Referral code & stats |
+| GET | /api/features/flash-sales | Active flash sales |
+| GET | /api/features/subscriptions | My subscriptions |
+| GET | /api/features/analytics | Admin sales analytics |
 
-### Cart & Wishlist
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | /api/cart | Get cart | Customer |
-| POST | /api/cart | Add to cart | Customer |
-| PUT | /api/cart/:productId | Update quantity | Customer |
-| DELETE | /api/cart/:productId | Remove item | Customer |
-| DELETE | /api/cart | Clear cart | Customer |
-| GET | /api/cart/wishlist/all | Get wishlist | Customer |
-| POST | /api/cart/wishlist/:productId | Toggle wishlist | Customer |
-
-### Orders
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| POST | /api/orders | Create order (COD) | Customer |
-| GET | /api/orders/my | My orders | Customer |
-| GET | /api/orders/:id | Order details | ✓ |
-| POST | /api/orders/coupon | Validate coupon | Customer |
-
-### Payments (Razorpay)
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | /api/payment/config | Get Razorpay key | — |
-| POST | /api/payment/create-order | Create payment order | Customer |
-| POST | /api/payment/verify | Verify payment signature | Customer |
-| POST | /api/payment/webhook | Razorpay webhook | — |
-
-### Admin
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | /api/admin/analytics | Dashboard stats | Admin |
-| GET | /api/admin/orders | All orders | Admin |
-| PUT | /api/admin/orders/:id/assign | Assign delivery person | Admin |
-| PUT | /api/admin/orders/:id/cancel | Cancel order | Admin |
-| GET | /api/admin/users | All users | Admin |
-| PUT | /api/admin/users/:id/toggle | Toggle user status | Admin |
-| GET | /api/admin/coupons | Get coupons | Admin |
-| POST | /api/admin/coupons | Create coupon | Admin |
-
-### Dynamic Pricing
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | /api/pricing/status | Pricing overview | Admin |
-| POST | /api/pricing/run | Trigger update | Admin |
-| PUT | /api/pricing/toggle/:id | Toggle for product | Admin |
-| PUT | /api/pricing/toggle-category | Toggle for category | Admin |
-
-### Delivery
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| GET | /api/delivery/orders | Assigned orders | Delivery |
-| GET | /api/delivery/completed | Completed deliveries | Delivery |
-| GET | /api/delivery/stats | Personal stats | Delivery |
-| PUT | /api/delivery/orders/:id/accept | Accept order | Delivery |
-| PUT | /api/delivery/orders/:id/out-for-delivery | Start delivery | Delivery |
-| PUT | /api/delivery/orders/:id/delivered | Mark delivered | Delivery |
-
-### AI Chat
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| POST | /api/chat | Send message to Gemini | — |
-| GET | /api/chat/models | List available models | — |
+### Algorithms
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | /api/algo/recommendations | Personalized recommendations |
+| GET | /api/algo/inventory-forecast | Stock risk forecast |
+| GET | /api/algo/abandoned-carts | Abandoned cart list |
+| POST | /api/algo/optimize-routes | Delivery route optimizer |
+| GET | /api/algo/coupon-targets | Smart coupon targeting |
 
 ---
 
